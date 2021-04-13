@@ -1,0 +1,87 @@
+#Quicksort with Median of 3 pivot selection and using Insertion Sort for small partition:
+
+import numpy as np
+
+#Insertion Sort
+
+def insertion(arr):
+    for i in range(arr.size):
+        key = arr[i]
+        j = i-1
+        while j >=0 and key < arr[j]:
+            arr[j+1] = arr[j]
+            j = j-1
+        arr[j+1] = key
+    return arr
+
+
+def medianofthree(arr, l, r):
+    #Finds median of first, middle and last element of array and sort them
+    #I've used the insertion sort 
+    
+    mid = (l+r)//2
+    a = np.array([arr[l], arr[mid], arr[r]], dtype = int)
+    a = insertion(a)
+
+    arr[l] = a[0]
+    arr[mid] = a[1]
+    arr[r] = a[2]
+
+    return arr
+
+def swap(arr, i, j):
+    
+    temp = arr[i]
+    arr[i] = arr[j]
+    arr[j] = temp
+
+def partition(arr, l, r):
+    #returns partitioned array and location of pivot
+    pivot = arr[(l+r)//2]
+
+    #putting the pivot value at the front of the array
+    swap (arr, 0, (l+r)//2)
+
+    i = 1
+    j = r
+
+    while i <= j:
+        while arr[i]<=pivot:
+            i +=1
+        while arr[j] > pivot:
+            j -=1
+        swap(arr,i,j)
+    swap(arr,0,j)
+
+    return arr, j
+
+    
+
+def quicksort(arr, l, r):
+    if r-l+1 > 4:
+        arr = medianofthree(arr,l,r) #pivot located at the mid position
+        
+        arr, loc = partition(arr,l,r)
+        quicksort(arr, l, loc-1)
+        quicksort(arr, loc+1, r)
+
+    else:
+        insertion(arr)
+
+    return arr
+    
+
+    
+n = int(input('Give the size of the array to be sorted'))
+
+arr = np.zeros(n)
+
+print ('Enter elements one by one')
+for i in range(n):
+    arr[i] = int(input())
+
+print('input array is', arr)
+quicksort(arr,0,n-1)
+    
+print(arr)
+    
